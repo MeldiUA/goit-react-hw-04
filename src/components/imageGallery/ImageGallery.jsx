@@ -1,7 +1,7 @@
 import ImageCard from '../imageCard/ImageCard';
-import css from './ImageList.module.css';
+import css from './ImageGallery.module.css';
 
-export default function ImageList({ items, openModalImage }) {
+export default function ImageGallery({ items, openModalImage }) {
   return (
     <ul className={css.imageList}>
       {items.map(item => (

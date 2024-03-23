@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import Modal from 'react-modal';
-import App from './App.jsx';
+import App from './components/app/App';
 import './index.css';
 
 Modal.setAppElement('#root');

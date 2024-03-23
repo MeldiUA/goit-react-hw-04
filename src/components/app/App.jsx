@@ -1,15 +1,12 @@
 import { useEffect, useState } from 'react';
-import debounce from 'lodash/debounce';
 
-import axios from 'axios';
-
-import './App.css';
-import { fetchPhotos } from './components/api/searchPhotoApi';
-import SearchBar from './components/searchBar/SearchBar';
-import ErrorMessage from './components/errorMessage/ErrorMessage';
-import Loader from './components/loader/Loader';
-import ImageList from './components/imageList/ImageList';
-import ImageModal from './components/imageModal/ImageModal';
+import { fetchPhotos } from '../api/searchPhotoApi';
+import SearchBar from '../searchBar/SearchBar';
+import ErrorMessage from '../errorMessage/ErrorMessage';
+import Loader from '../loader/Loader';
+import ImageGallery from '../imageGallery/ImageGallery';
+import ImageModal from '../imageModal/ImageModal';
+import LoadMoreBtn from '../loadMoreBtn/LoadMoreBtn';
 
 export default function App() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -19,21 +16,6 @@ export default function App() {
   const [photos, setPhotos] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = debounce(() => {
-      const { scrollTop, clientHeight, scrollHeight } =
-        document.documentElement;
-      if (scrollTop + clientHeight >= scrollHeight - 100) {
-        setPage(prevPage => prevPage + 1);
-      }
-    }, 200);
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
 
   useEffect(() => {
     if (searchQuery === '') {
@@ -71,12 +53,19 @@ export default function App() {
     setModalIsOpen(false);
   };
 
+  const handleLoadMore = () => {
+    setPage(prevPage => prevPage + 1);
+  };
+
   return (
     <div>
       {<SearchBar onSearch={handleSearch} />}
       {error && <ErrorMessage />}
       {photos.length > 0 && (
-        <ImageList items={photos} openModalImage={handleOpenModal}></ImageList>
+        <ImageGallery
+          items={photos}
+          openModalImage={handleOpenModal}
+        ></ImageGallery>
       )}
       {modalIsOpen && (
         <ImageModal
@@ -84,6 +73,9 @@ export default function App() {
           isOpen={modalIsOpen}
           onRequestClose={onRequestClose}
         ></ImageModal>
+      )}
+      {photos.length > 0 && !isLoading && (
+        <LoadMoreBtn handleLoadMore={handleLoadMore} />
       )}
       {isLoading && <Loader />}
     </div>
